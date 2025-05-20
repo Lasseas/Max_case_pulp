@@ -1,0 +1,8 @@
+FlexibleLoad	SelfDischarge
+BESS_Li_Ion_1	4.1666666666666665e-05
+BESS_Redox_1	0.0
+CAES_1	0.0
+Flywheel_1	0.00125
+Hot_Water_Tank_LT_1	8.333333333333333e-05
+H2_Storage_1	0.0004166666666666667
+CH4_Storage_1	0.0

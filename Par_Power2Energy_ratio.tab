@@ -1,0 +1,8 @@
+FlexibleLoads	Power2Energy
+BESS_Li_Ion_1	1.0
+BESS_Redox_1	0.25
+CAES_1	0.1
+Flywheel_1	1.0
+Hot_Water_Tank_LT_1	0.01657142857142857
+H2_Storage_1	0.005988023952095809
+CH4_Storage_1	1.0

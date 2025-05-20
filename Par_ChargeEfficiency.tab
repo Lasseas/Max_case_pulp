@@ -1,0 +1,8 @@
+FlexibleLoad	Charge_efficiency
+BESS_Li_Ion_1	1.0204081632653061
+BESS_Redox_1	1.0
+CAES_1	1.1904761904761905
+Flywheel_1	1.0101010101010102
+Hot_Water_Tank_LT_1	1.0
+H2_Storage_1	1.1363636363636365
+CH4_Storage_1	1.0
