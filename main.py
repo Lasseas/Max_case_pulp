@@ -404,6 +404,7 @@ model.Up_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = 
 model.Dwn_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.aggregated_Up_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.aggregated_Dwn_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
+model.Not_Supplied_Energy = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.I_inv = pyo.Var()
 model.I_GT = pyo.Var()
 model.I_cap_bid = pyo.Var(model.Time)
@@ -506,7 +507,7 @@ def cost_opex(model, n, s, t):
             ) 
             - sum(model.cost_activity[n, t, i, o] * model.y_activity[n, t, i, o] for (i, e, o) in model.EnergyCarrierToTechnology)
             + sum(model.Cost_Battery[b] * model.q_discharge[n, t, b] for b in model.FlexibleLoad)
-            + sum(model.Cost_LS[e]*model.Dwn_Shift[n, t, e] for e in model.EnergyCarrier)
+            + sum(model.Cost_LS[e]*model.Dwn_Shift[n, t, e] + 10_000 * model.Not_Supplied_Energy[n, t, e] for e in model.EnergyCarrier)
     )
 model.OPEXCost = pyo.Constraint(model.Nodes_in_stage, model.Time, rule=cost_opex)
 
@@ -529,7 +530,7 @@ def energy_balance(model, n, s, t, e):
 model.EnergyBalance = pyo.Constraint(model.Nodes_in_stage, model.Time, model.EnergyCarrier, rule=energy_balance)
 
 def Defining_flexible_demand(model, n, s, t, e):
-    return model.d_flex[n, t, e] == model.Demand[n, t, e] + model.Up_Shift[n, t, e] - model.Dwn_Shift[n, t, e]
+    return model.d_flex[n, t, e] == model.Demand[n, t, e] + model.Up_Shift[n, t, e] - model.Dwn_Shift[n, t, e] - model.Not_Supplied_Energy[n, t, e]
 model.DefiningFlexibleDemand = pyo.Constraint(model.Nodes_in_stage, model.Time, model.EnergyCarrier, rule = Defining_flexible_demand)
 
 #####################################################################################
