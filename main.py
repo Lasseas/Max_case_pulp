@@ -19,7 +19,7 @@ from pyomo.environ import *
 import argparse
 #from Generate_data_files import run_everything
 parser = argparse.ArgumentParser(description="Run model instance")
-parser.add_argument("--instance", type=int, required=True, help="Instance number (e.g., 1–5)")
+parser.add_argument("--instance", type=int, required=True, help="Instance number")
 parser.add_argument("--year", type=int, required=True, help="Year (e.g., 2025 or 2050)")
 parser.add_argument("--case", type=str, required=True, choices=["wide", "deep", "max"], help="Specify case type")
 parser.add_argument("--file", type=str, help = "path name for output file")
