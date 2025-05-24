@@ -22,11 +22,13 @@ parser = argparse.ArgumentParser(description="Run model instance")
 parser.add_argument("--instance", type=int, required=True, help="Instance number (e.g., 1–5)")
 parser.add_argument("--year", type=int, required=True, help="Year (e.g., 2025 or 2050)")
 parser.add_argument("--case", type=str, required=True, choices=["wide", "deep", "max"], help="Specify case type")
+parser.add_argument("--file", type=str, help = "path name for output file")
 args = parser.parse_args()
 
 instance = args.instance
 year = args.year
 case = args.case
+filepath = args.file
 
 excel_path = "NO1_Pulp_Paper_2024_combined historical data_Uten_SatSun.xlsx"
 #excel_path = "NO1_Pulp_Paper_2024_combined historical data.xlsx"
@@ -405,6 +407,7 @@ model.Dwn_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain =
 model.aggregated_Up_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.aggregated_Dwn_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.Not_Supplied_Energy = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
+model.I_loadShedding = pyo.Var()
 model.I_inv = pyo.Var()
 model.I_GT = pyo.Var()
 model.I_cap_bid = pyo.Var(model.Time)
@@ -511,6 +514,9 @@ def cost_opex(model, n, s, t):
     )
 model.OPEXCost = pyo.Constraint(model.Nodes_in_stage, model.Time, rule=cost_opex)
 
+def cost_load_shedding(model):
+    return model.I_loadShedding == sum(sum(sum(model.Node_Probability[n] * 10_000 * model.Not_Supplied_Energy[n, t, e] for (n,s) in model.Nodes_in_stage if s == model.Period) for t in model.Time) for e in model.EnergyCarrier)
+model.CostLoadShedding = pyo.Constraint(rule=cost_load_shedding)
 
 
 ###########################################
@@ -1009,7 +1015,7 @@ def save_results_to_excel(model_instance, instance, year, timestamp, max_rows_pe
     import pandas as pd
     from pyomo.environ import value
 
-    filename = f"Variable_Results_instance{instance}_year{year}_time{timestamp}.xlsx"
+    filename = f"Variable_Results_instance{instance}_year{year}_{filepath}_time{timestamp}.xlsx"
 
     # Ensure xlsxwriter is available
     try:
@@ -1024,6 +1030,8 @@ def save_results_to_excel(model_instance, instance, year, timestamp, max_rows_pe
 
     with pd.ExcelWriter(filename, engine="xlsxwriter") as writer:
         for var in model_instance.component_objects(pyo.Var, active=True):
+            if var.name not in ["v_new_tech", "v_new_bat", "Not_Supplied_Energy"]:
+                continue
             var_name = var.name
             var_data = []
 
@@ -1066,6 +1074,10 @@ shutil.move(excel_filename, os.path.join(results_folder, excel_filename))
 # Get the objective value
 objective_value = pyo.value(our_model.Objective)
 num_Nodes = len(our_model.Nodes) if hasattr(our_model, "Nodes") else "Unknown"
+num_days = len(our_model.Period)
+objective_scaled_to_year = (objective_value / num_days) * 365
+loadShedding_cost = pyo.value(our_model.I_loadShedding)
+loadShedding_cost_scaled_to_year = (loadShedding_cost/num_days) * 365
 
 # List of your branch counts
 branches = [
@@ -1128,6 +1140,12 @@ Number of branches per stage:
 Number of Scenarios: {num_scenarios}
 Number of Nodes: {num_Nodes}
 Objective Value: {objective_value:.2f}
+Costs related to load shedding: {loadShedding_cost:.2f}
+----------------------------------------------------
+SCALED TO YEARLY COSTS:
+----------------------------------------------------
+Objective Value (scaled to yearly cost): {objective_scaled_to_year:.2f}
+Load shedding cost (scaled to yearly cost): {loadShedding_cost_scaled_to_year:.2f}
 """
 
 # Save it to the Results folder
