@@ -399,8 +399,8 @@ model.y_activity = pyo.Var(model.Nodes, model.Time, model.Technology, model.Mode
 model.q_charge = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
 model.q_discharge = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
 model.q_SoC = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
-model.v_new_tech = pyo.Var(model.Technology, domain = pyo.NonNegativeReals, bounds = (0,0)) 
-model.v_new_bat = pyo.Var(model.FlexibleLoad, domain = pyo.NonNegativeReals, bounds = (0,0))
+model.v_new_tech = pyo.Var(model.Technology, domain = pyo.NonNegativeReals)#, bounds = (0,0)) 
+model.v_new_bat = pyo.Var(model.FlexibleLoad, domain = pyo.NonNegativeReals)#, bounds = (0,0))
 model.y_max = pyo.Var(model.Nodes, model.Month, domain = pyo.NonNegativeReals)
 model.d_flex = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.Up_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
@@ -1300,13 +1300,14 @@ Number of branches per stage:
 Number of Scenarios: {num_scenarios}
 Number of Nodes: {num_Nodes}
 Objective Value: {objective_value:.2f}
+Investment Cost (tech+bat): {investment_cost:.2f}
 Costs related to load shedding: {loadShedding_cost:.2f}
 ----------------------------------------------------
 SCALED TO YEARLY COSTS:
 ----------------------------------------------------
 Objective Value (scaled to yearly cost): {objective_scaled_to_year:.2f}
-Load shedding cost (scaled to yearly cost): {loadShedding_cost_scaled_to_year:.2f}
 Investment Cost (scaled to yearly cost): {investment_cost_scaled_to_year:.2f}
+Load shedding cost (scaled to yearly cost): {loadShedding_cost_scaled_to_year:.2f}
 
     
 ---------------- COST COMPONENT BREAKDOWN: --------------------------------
