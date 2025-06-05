@@ -387,8 +387,8 @@ data.load(filename="Par_Res_CapacityDownVolume.tab", param=model.Res_Cap_Down_vo
 VARIABLES
 """
 #Declaring Variables
-model.x_UP = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals, bounds = (0,0))
-model.x_DWN = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals, bounds = (0,0))
+model.x_UP = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)#, bounds = (0,0))
+model.x_DWN = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)#, bounds = (0,0))
 model.x_DA_buy = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
 model.x_DA_sell = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
 model.x_ID_buy = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
@@ -400,7 +400,7 @@ model.q_charge = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= py
 model.q_discharge = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
 model.q_SoC = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
 model.v_new_tech = pyo.Var(model.Technology, domain = pyo.NonNegativeReals)#, bounds = (0,0)) 
-model.v_new_bat = pyo.Var(model.FlexibleLoad, domain = pyo.NonNegativeReals)#, bounds = (0,0))
+model.v_new_bat = pyo.Var(model.FlexibleLoad, domain = pyo.NonNegativeReals, bounds = (0,0))
 model.y_max = pyo.Var(model.Nodes, model.Month, domain = pyo.NonNegativeReals)
 model.d_flex = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.Up_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)#, bounds = (0,0))
@@ -1146,8 +1146,8 @@ DISPLAY RESULTS??
 """
 print("Writing results to .csv...")
 
-our_model.display('results.csv')
-our_model.dual.display()
+#our_model.display('results.csv')
+#our_model.dual.display()
 print("-" * 70)
 print("Objective and running time:")
 print(f"Objective value: {round(pyo.value(our_model.Objective),2)}")
