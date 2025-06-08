@@ -407,7 +407,7 @@ model.Up_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = 
 model.Dwn_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)#, bounds = (0,0))
 model.aggregated_Up_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.aggregated_Dwn_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
-model.Not_Supplied_Energy = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals, bounds = (0,0))
+model.Not_Supplied_Energy = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)#, bounds = (0,0))
 model.I_loadShedding = pyo.Var()
 model.I_inv = pyo.Var()
 model.I_GT = pyo.Var()
