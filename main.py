@@ -387,8 +387,8 @@ data.load(filename="Par_Res_CapacityDownVolume.tab", param=model.Res_Cap_Down_vo
 VARIABLES
 """
 #Declaring Variables
-model.x_UP = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)#, bounds = (0,0))
-model.x_DWN = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)#, bounds = (0,0))
+model.x_UP = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
+model.x_DWN = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
 model.x_DA_buy = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
 model.x_DA_sell = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
 model.x_ID_buy = pyo.Var(model.Nodes, model.Time, domain= pyo.NonNegativeReals)
@@ -399,15 +399,15 @@ model.y_activity = pyo.Var(model.Nodes, model.Time, model.Technology, model.Mode
 model.q_charge = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
 model.q_discharge = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
 model.q_SoC = pyo.Var(model.Nodes, model.Time, model.FlexibleLoad, domain= pyo.NonNegativeReals)
-model.v_new_tech = pyo.Var(model.Technology, domain = pyo.NonNegativeReals)#, bounds = (0,0)) 
-model.v_new_bat = pyo.Var(model.FlexibleLoad, domain = pyo.NonNegativeReals, bounds = (0,0))
+model.v_new_tech = pyo.Var(model.Technology, domain = pyo.NonNegativeReals)
+model.v_new_bat = pyo.Var(model.FlexibleLoad, domain = pyo.NonNegativeReals)
 model.y_max = pyo.Var(model.Nodes, model.Month, domain = pyo.NonNegativeReals)
 model.d_flex = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
-model.Up_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)#, bounds = (0,0))
-model.Dwn_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)#, bounds = (0,0))
+model.Up_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
+model.Dwn_Shift = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.aggregated_Up_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.aggregated_Dwn_Shift = pyo.Var(model.Nodes, model.EnergyCarrier, domain = pyo.NonNegativeReals)
-model.Not_Supplied_Energy = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)#, bounds = (0,0))
+model.Not_Supplied_Energy = pyo.Var(model.Nodes, model.Time, model.EnergyCarrier, domain = pyo.NonNegativeReals)
 model.I_loadShedding = pyo.Var()
 model.I_inv = pyo.Var()
 model.I_GT = pyo.Var()
@@ -1024,6 +1024,10 @@ model.CAPEXFlexibleLoadLim = pyo.Constraint(model.FlexibleLoad, rule=CAPEX_flexi
 def CAPEX_limitations(model):
     return model.I_inv <= model.Max_CAPEX
 model.CAPEXLim = pyo.Constraint(rule=CAPEX_limitations)
+
+def no_battery_investment(model, b):
+    return model.v_new_bat[b] == 0
+model.NoBatteryInvestment = pyo.Constraint(model.FlexibleLoad, rule=no_battery_investment)
 
 ##############################################################
 ##################### CARBON EMISSION LIMIT ##################
